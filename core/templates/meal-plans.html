@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="{% static 'images/favicon.png' %}" type="image/x-icon">
+    <title>Meal Plans - HEALS</title>
+    <!-- <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/2382/2382533.png" type="image/png"> -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        .hero-section {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            padding: 80px 0;
+        }
+        .card {
+            transition: transform 0.3s;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold text-success" href="{% url 'home' %}">
+                <i class="bi bi-heart-pulse"></i> HEALS - Healthy Eats Long Span
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Home</a></li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle active" href="#" id="servicesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Our Services
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="servicesDropdown">
+                            <li><a class="dropdown-item" href="{% url 'specialists' %}"><i class="bi bi-people"></i> Specialists</a></li>
+                            <li><a class="dropdown-item active" href="{% url 'meal_plans' %}"><i class="bi bi-calendar-check"></i> Meal Plans</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'my_purchases' %}"><i class="bi bi-cart"></i> My Purchases</a></li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-person-circle"></i> {{ user.first_name }}
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="userDropdown">
+                            <li><a class="dropdown-item" href="{% url 'my_purchases' %}"><i class="bi bi-speedometer2"></i> My Dashboard</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{% url 'logout' %}"><i class="bi bi-box-arrow-right"></i> Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container text-center">
+            <h1 class="display-3 fw-bold mb-3">Personalized Meal Plans</h1>
+            <p class="lead">Choose from our expertly crafted meal plans designed for your health goals</p>
+            <div class="mt-4">
+                <i class="bi bi-check-circle me-2"></i> Custom Nutrition
+                <i class="bi bi-check-circle mx-3"></i> Easy to Follow
+                <i class="bi bi-check-circle ms-2"></i> Delicious Recipes
+            </div>
+        </div>
+    </section>
+
+    <!-- Meal Plans Grid -->
+    <div class="container py-5">
+        <div class="row g-4">
+            {% for plan in meal_plans %}
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm">
+                    {% if plan.image %}
+                    <img src="{{ plan.image.url }}" class="card-img-top" style="height:250px;object-fit:cover;" alt="{{ plan.name }}">
+                    {% else %}
+                    <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=250&fit=crop" class="card-img-top" alt="{{ plan.name }}">
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title fw-bold">{{ plan.name }}</h5>
+                        <p class="text-muted">{{ plan.diet_type }} • {{ plan.duration }}</p>
+                        <p class="card-text">{{ plan.description|truncatewords:12 }}</p>
+                        <ul class="list-unstyled small text-muted mb-3">
+                            <li><i class="bi bi-calendar3 text-success"></i> {{ plan.duration }}</li>
+                            <li><i class="bi bi-fire text-danger"></i> {{ plan.calories }} calories/day</li>
+                        </ul>
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="h4 mb-0 text-success">${{ plan.price }}</span>
+                            <span class="badge bg-success">Popular</span>
+                        </div>
+                        <a href="{% url 'purchase_meal_plan' plan.pk %}" class="btn btn-success w-100">
+                            <i class="bi bi-cart-check"></i> Get This Plan
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center py-5">
+                <i class="bi bi-inbox display-1 text-muted"></i>
+                <p class="text-muted mt-3">No meal plans available yet.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Benefits Section -->
+    <section class="py-5 bg-light">
+        <div class="container">
+            <h2 class="text-center display-6 fw-bold mb-5">Why Choose Our <span class="text-success">Meal Plans?</span></h2>
+            <div class="row g-4">
+                <div class="col-md-3 text-center">
+                    <i class="bi bi-graph-up-arrow display-3 text-success mb-3"></i>
+                    <h5>Proven Results</h5>
+                    <p class="text-muted">Scientifically designed for optimal nutrition</p>
+                </div>
+                <div class="col-md-3 text-center">
+                    <i class="bi bi-heart-pulse display-3 text-success mb-3"></i>
+                    <h5>Health First</h5>
+                    <p class="text-muted">Created by certified nutritionists</p>
+                </div>
+                <div class="col-md-3 text-center">
+                    <i class="bi bi-clock-history display-3 text-success mb-3"></i>
+                    <h5>Time Saving</h5>
+                    <p class="text-muted">Quick and easy meal prep</p>
+                </div>
+                <div class="col-md-3 text-center">
+                    <i class="bi bi-currency-dollar display-3 text-success mb-3"></i>
+                    <h5>Affordable</h5>
+                    <p class="text-muted">Great value for your health</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-5">
+        <div class="container">
+            <div class="card bg-success text-white border-0 shadow-lg">
+                <div class="card-body p-5 text-center">
+                    <h2 class="display-5 fw-bold mb-3">Start Your Health Journey Today!</h2>
+                    <p class="lead mb-4">Join thousands of satisfied members who transformed their lives with HEALS</p>
+                    <a href="{% url 'specialists' %}" class="btn btn-light btn-lg me-2">
+                        <i class="bi bi-people"></i> Book a Specialist
+                    </a>
+                    <a href="#" onclick="window.scrollTo(0,400)" class="btn btn-outline-light btn-lg">
+                        <i class="bi bi-arrow-up"></i> Browse Plans
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5 class="mb-3"><i class="bi bi-heart-pulse"></i> HEALS</h5>
+                    <p class="text-light">Your partner in healthy eating and long span living.</p>
+                </div>
+                <div class="col-md-4">
+                    <h5 class="mb-3">Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="{% url 'home' %}" class="text-light text-decoration-none">Home</a></li>
+                        <li><a href="{% url 'specialists' %}" class="text-light text-decoration-none">Specialists</a></li>
+                       <!-- <li><a href="{% url 'meal_plans' %}" class="text-light text-decoration-none">Meal Plans</a></li> -->
+                        <li><a href="{% url 'my_purchases' %}" class="text-light text-decoration-none">My Purchases</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h5 class="mb-3">Contact</h5>
+                    <p class="text-light">
+                        <i class="bi bi-envelope"></i> support@heals.com<br>
+                        <i class="bi bi-telephone"></i> +254 700 000 000
+                    </p>
+                </div>
+            </div>
+            <hr class="my-4 bg-secondary">
+            <p class="text-center text-muted mb-0">&copy; 2024 HEALS. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

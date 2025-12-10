@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="{% static 'images/favicon.png' %}" type="image/x-icon">
+    <title>Our Specialists - HEALS</title>
+    <!-- <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/2382/2382533.png" type="image/png"> -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        .hero-section {
+            background: linear-gradient(135deg, #235e36 0%, #4fcf6f 100%);
+            color: white;
+            padding: 80px 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold text-success" href="{% url 'home' %}">
+                <i class="bi bi-heart-pulse"></i> HEALS - Healthy Eats Long Span
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Home</a></li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle active" href="#" role="button" data-bs-toggle="dropdown">
+                            Our Services
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item active" href="{% url 'specialists' %}">Specialists</a></li>
+                            <li><a class="dropdown-item" href="{% url 'meal_plans' %}">Meal Plans</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'my_purchases' %}">My Purchases</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}">Logout</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container text-center">
+            <h1 class="display-3 fw-bold mb-3">Meet Our Expert Specialists</h1>
+            <p class="lead">Book one-on-one consultations with certified nutritionists and wellness coaches</p>
+        </div>
+    </section>
+
+    <!-- Specialists Grid -->
+    <div class="container py-5">
+        <div class="row g-4">
+            {% for specialist in specialists %}
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm">
+                    {% if specialist.photo %}
+                    <img src="{{ specialist.photo.url }}" class="card-img-top" style="height:250px;object-fit:cover;" alt="{{ specialist.name }}">
+                    {% else %}
+                    <img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=400&h=250&fit=crop" class="card-img-top" alt="{{ specialist.name }}">
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title fw-bold">{{ specialist.name }}</h5>
+                        <p class="text-muted">{{ specialist.title }}</p>
+                        <p class="card-text">{{ specialist.bio|truncatewords:15 }}</p>
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="text-success fw-bold">${{ specialist.hourly_rate }}/hr</span>
+                            <span class="text-warning"><i class="bi bi-star-fill"></i> {{ specialist.rating }}</span>
+                        </div>
+                        <a href="{% url 'specialist_detail' specialist.pk %}" class="btn btn-success w-100">
+                            <i class="bi bi-calendar-check"></i> Book Consultation
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center">
+                <p class="text-muted">No specialists available yet.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5 class="mb-3"><i class="bi bi-heart-pulse"></i> HEALS</h5>
+                    <p class="text-light">Your partner in healthy eating and long span living.</p>
+                </div>
+                <div class="col-md-4">
+                    <h5 class="mb-3">Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="{% url 'home' %}" class="text-light text-decoration-none">Home</a></li>
+                        <!-- <li><a href="{% url 'specialists' %}" class="text-light text-decoration-none">Specialists</a></li> -->
+                        <li><a href="{% url 'meal_plans' %}" class="text-light text-decoration-none">Meal Plans</a></li>
+                        <li><a href="{% url 'my_purchases' %}" class="text-light text-decoration-none">My Purchases</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h5 class="mb-3">Contact</h5>
+                    <p class="text-light">
+                        <i class="bi bi-envelope"></i> support@heals.com<br>
+                        <i class="bi bi-telephone"></i> +254 700 000 000
+                    </p>
+                </div>
+            </div>
+            <hr class="my-4 bg-secondary">
+            <p class="text-center text-muted mb-0">&copy; 2024 HEALS. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
